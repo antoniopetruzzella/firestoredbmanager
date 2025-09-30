@@ -1,0 +1,10 @@
+<div *ngIf="loading()">🔄 Caricamento collezioni...</div>
+<div *ngIf="error()">{{ error() }}</div>
+
+<div *ngIf="!loading() && !error()">
+  <label for="collection">📁 Seleziona una collezione:</label>
+  <select id="collection" [ngModel]="selectedCollection()" (ngModelChange)="selectedCollection.set($event)">
+    <option *ngFor="let col of collections()" [value]="col">{{ col }}</option>
+  </select>
+  <button (click)="chooseCollection()">Scegli</button>
+</div>

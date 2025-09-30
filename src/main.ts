@@ -7,10 +7,11 @@ import { getAuth, provideAuth } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { firebaseConfig } from './environments/firebase-config'
 import { AppShellComponent } from './app/appshell.component';
+import { AuthGuard } from './app/auth/auth.guard';
 
 const routes: Routes = [
   { path: 'login', loadComponent: () => import('./app/auth/login.component').then(m => m.LoginComponent) },
-  //{ path: 'collections', loadComponent: () => import('./app/collections/collection-list.component').then(m => m.CollectionListComponent), canActivate: [AuthGuard] },
+  { path: 'collections', loadComponent: () => import('./app/collectionlist/collection-list.component').then(m => m.CollectionListComponent), canActivate: [AuthGuard] },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
 ];
 const firebaseApp = initializeApp(firebaseConfig); // ✅ inizializza l'app
