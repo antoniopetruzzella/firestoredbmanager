@@ -56,7 +56,7 @@ ngOnInit(): void {
   chooseCollection(): void {
     const collection = this.selectedCollection();
     if (collection) {
-      this.router.navigate(['/document', collection]);
+      this.router.navigate(['/documents-list', collection]);
     }
   }
 }

@@ -1,0 +1,42 @@
+<div *ngIf="loading()">🔄 Caricamento documenti...</div>
+<div *ngIf="error()">{{ error() }}</div>
+
+<div *ngIf="!loading() && !error()">
+  <h2>📁 Documenti nella collezione: {{ collectionId }}</h2>
+
+<div *ngFor="let doc of documents(); let i = index">
+  <div *ngIf="editingDocId() !== doc.id">
+    <h3>🗂️ Documento {{ i + 1 }} - ID: {{ doc.id }}</h3>
+    <button (click)="editDocumentName(doc.id)">✏️ Modifica nome documento</button>
+     <button (click)="deleteDocument(doc.id)">🗑️ Cancella</button>
+  </div>
+
+  <div *ngIf="editingDocId() === doc.id">
+    <input [ngModel]="newDocName()" (ngModelChange)="newDocName.set($event)" />
+    <button (click)="saveDocumentName(doc.id)">💾 Salva</button>
+  </div>
+
+  <!-- Tabella dei dati -->
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Campo</th>
+        <th>Valore</th>
+        <th>Azioni</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let campo of doc.dati">
+        <td>{{ campo.chiave }}</td>
+        <td>{{ campo.valore }}</td>
+        <td><button (click)="editRecord(doc.id)">🛠️ Modifica record</button></td>
+      </tr>
+    </tbody>
+  </table>
+  <hr>
+</div>
+
+<button (click)="addDocument()">➕ Aggiungi documento</button>
+
+   
+</div>

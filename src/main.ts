@@ -12,6 +12,7 @@ import { AuthGuard } from './app/auth/auth.guard';
 const routes: Routes = [
   { path: 'login', loadComponent: () => import('./app/auth/login.component').then(m => m.LoginComponent) },
   { path: 'collections', loadComponent: () => import('./app/collectionlist/collection-list.component').then(m => m.CollectionListComponent), canActivate: [AuthGuard] },
+  { path: 'documents-list/:collectionId', loadComponent: () => import('./app/documentslist/documents-list.component').then(m => m.DocumentsListComponent), canActivate: [AuthGuard] },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
 ];
 const firebaseApp = initializeApp(firebaseConfig); // ✅ inizializza l'app
