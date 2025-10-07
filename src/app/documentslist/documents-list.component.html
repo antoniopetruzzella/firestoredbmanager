@@ -29,10 +29,19 @@
       <tr *ngFor="let campo of doc.dati">
         <td>{{ campo.chiave }}</td>
         <td>{{ campo.valore }}</td>
-        <td><button (click)="editRecord(doc.id)">🛠️ Modifica record</button></td>
+        <td><button (click)="editRecord(doc.id)">🛠️ Modifica record</button>
+        <button (click)="deleteRecord(doc.id, campo.chiave, campo.valore)">🗑️ Cancella record</button>
       </tr>
     </tbody>
   </table>
+  
+ <div>
+  <label>Nuovo campo:</label>
+  <input [ngModel]="getKey(doc.id)" (ngModelChange)="updateKey(doc.id, $event)" />
+  <input [ngModel]="getValue(doc.id)" (ngModelChange)="updateValue(doc.id, $event)" />
+  <button (click)="addFieldToDocument(doc.id)">➕ Aggiungi campo</button>
+</div>
+
   <hr>
 </div>
 
