@@ -4,11 +4,13 @@ import { ActivatedRoute } from '@angular/router';
 import { HttpClientModule, HttpClient, HttpParams } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { getAuth } from 'firebase/auth';
+import { AddDocumentModalComponent } from "../adddocumentmodal/add-document-modal.component";
+import { UploadImageModalComponent } from "../updateimagemodal/update-image-modal.component";
 
 @Component({
   selector: 'app-documents-list',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, FormsModule],
+  imports: [CommonModule, HttpClientModule, FormsModule, AddDocumentModalComponent, UploadImageModalComponent],
   templateUrl: './documents-list.component.html',
   //styleUrls: ['./documents-list.component.css']
 })
@@ -20,7 +22,8 @@ export class DocumentsListComponent implements OnInit {
   editingDocId = signal<string | null>(null);
   newDocName = signal<string>('');
   Object: any;
-
+  showModalNewDoc = signal(false);
+  showModalLoadPict=signal(false);
   constructor(private route: ActivatedRoute, private http: HttpClient) {}
 
   ngOnInit(): void {
@@ -72,9 +75,14 @@ export class DocumentsListComponent implements OnInit {
   }
 
   addDocument(): void {
+    this.showModalNewDoc.set(true);
     console.log('Aggiungi documento');
     // Da implementare
   }
+  loadPicture() {
+  this.showModalLoadPict.set(true);
+    console.log('Carica immagine');
+}
   saveDocumentName(docId: string): void {
   const nuovoID = this.newDocName();
   const auth = getAuth();

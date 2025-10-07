@@ -37,6 +37,16 @@
 </div>
 
 <button (click)="addDocument()">➕ Aggiungi documento</button>
+<button (click)="loadPicture()">🖼️ Carica immagine</button>
 
-   
+ <app-add-document-modal
+  *ngIf="showModalNewDoc()"
+  [collectionId]="collectionId"
+  (chiudi)="showModalNewDoc.set(false)"
+></app-add-document-modal> 
+ <app-upload-image-modal
+  *ngIf="showModalLoadPict()"
+  [collectionId]="collectionId"
+  (chiudi)="showModalNewDoc.set(false)"
+></app-upload-image-modal>  
 </div>

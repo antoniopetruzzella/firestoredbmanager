@@ -1,0 +1,16 @@
+<div class="modal">
+  <h2>➕ Nuovo Documento</h2>
+
+  <label>🆔 Nome documento:</label>
+  <input [(ngModel)]="documentId" placeholder="ID documento" />
+
+  <div *ngFor="let campo of campi; let i = index">
+    <input [(ngModel)]="campo.chiave" placeholder="Chiave" />
+    <input [(ngModel)]="campo.valore" placeholder="Valore" />
+  </div>
+
+  <button (click)="aggiungiCampo()">➕ Aggiungi campo</button>
+  <button (click)="caricaDocumento()">📤 Carica nuovo documento</button>
+  <button (click)="chiudi.emit()">❌ Chiudi</button>
+</div>
+

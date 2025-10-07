@@ -1,0 +1,24 @@
+<div class="modal">
+  <h2>🖼️ Carica Immagine</h2>
+
+  <input type="file" (change)="onFileSelected($event)" />
+  <button (click)="caricaImmagine()" [disabled]="loading || !selectedFile">
+    📤 Carica immagine
+  </button>
+
+  <div *ngIf="campi[0].valore">
+    <h3>📝 Crea documento immagine</h3>
+    <label>ID documento:</label>
+    <input [(ngModel)]="documentId" placeholder="ID documento" />
+
+    <label>Chiave:</label>
+    <input [(ngModel)]="campi[0].chiave" disabled />
+
+    <label>Valore (URL immagine):</label>
+    <input [(ngModel)]="campi[0].valore" />
+
+    <button (click)="caricaDocumento()">📥 Salva documento</button>
+  </div>
+
+  <button (click)="chiudi.emit()">❌ Chiudi</button>
+</div>
