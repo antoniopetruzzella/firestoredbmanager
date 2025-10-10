@@ -6,7 +6,12 @@
 
   <div *ngFor="let campo of campi; let i = index">
     <input [(ngModel)]="campo.chiave" placeholder="Titolo" />
-    <input [(ngModel)]="campo.valore" placeholder="Notizia" />
+    <textarea
+  [(ngModel)]="campo.valore"
+  rows="3"
+  placeholder="Notizia"
+  style="width: 100%; resize: vertical;"
+></textarea>
   </div>
 
   <button (click)="aggiungiCampo()">➕ Aggiungi campo</button>

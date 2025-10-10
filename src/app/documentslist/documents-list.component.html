@@ -48,9 +48,15 @@
 
       <!-- Aggiunta nuovo campo -->
       <div style="margin-top: 10px;">
-        <label><strong>Nuovo campo:</strong></label>
+        <label><strong>Nuovo campo:</strong></label><br>
         <input [ngModel]="getKey(doc.id)" (ngModelChange)="updateKey(doc.id, $event)" placeholder="Titolo" />
-        <input [ngModel]="getValue(doc.id)" (ngModelChange)="updateValue(doc.id, $event)" placeholder="Notizia" />
+        <textarea
+  [ngModel]="getValue(doc.id)"
+  (ngModelChange)="updateValue(doc.id, $event)"
+  placeholder="Notizia"
+  rows="3"
+  style="width: 100%; resize: vertical;"
+></textarea>
         <button (click)="addFieldToDocument(doc.id)">➕ Aggiungi campo</button>
       </div>
     </div>
