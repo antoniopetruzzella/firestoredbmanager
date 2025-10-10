@@ -24,8 +24,9 @@ export class DocumentsListComponent implements OnInit {
   Object: any;
   showModalNewDoc = signal(false);
   showModalLoadPict=signal(false);
- newFieldKeyMap = signal<{ [docId: string]: string }>({});
+  newFieldKeyMap = signal<{ [docId: string]: string }>({});
   newFieldValueMap = signal<{ [docId: string]: string }>({});
+  expandedDocs = signal<{ [docId: string]: boolean }>({});
   j!: number;
 
   constructor(private route: ActivatedRoute, private http: HttpClient) {}
@@ -288,6 +289,79 @@ deleteRecord(docId: string, chiave: string, valore: string): void {
     this.error.set('Errore nel recupero del token: ' + err.message);
     this.loading.set(false);
   });
+}
+updateRecord(docId: string, chiaveOriginale: string, valoreOriginale: string): void {
+  const nuovaChiave = prompt(`Inserisci la nuova chiave per "${chiaveOriginale}" (lascia invariata se non vuoi cambiarla):`, chiaveOriginale);
+  const nuovoValore = prompt(`Inserisci il nuovo valore per "${nuovaChiave}":`, valoreOriginale);
+
+  if (!chiaveOriginale || !nuovaChiave || nuovaChiave.trim() === '' || nuovoValore === null || nuovoValore.trim() === '') {
+    alert('Chiave e valore devono essere validi');
+    return;
+  }
+
+  const auth = getAuth();
+  const user = auth.currentUser;
+
+  if (!user) {
+    this.error.set('Utente non autenticato');
+    return;
+  }
+
+  this.loading.set(true);
+
+  user.getIdToken().then(token => {
+    const url = 'https://modificacampo-565624036400.europe-west1.run.app';
+    const body = {
+      collezionePadreID: this.collectionId,
+      documentoID: docId,
+      chiaveOriginale: chiaveOriginale,
+      nuovaChiave: nuovaChiave,
+      nuovoValore: nuovoValore
+    };
+
+    this.http.post(url, body, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }).subscribe({
+      next: () => {
+        console.log(`✏️ Campo aggiornato in ${docId}: ${chiaveOriginale} → ${nuovaChiave}, valore: ${nuovoValore}`);
+        const updated = this.documents().map(doc => {
+          if (doc.id !== docId) return doc;
+
+          const nuoviCampi = doc.dati.map((campo: any) => {
+            if (campo.chiave === chiaveOriginale && campo.valore === valoreOriginale) {
+              return { chiave: nuovaChiave, valore: nuovoValore };
+            }
+            return campo;
+          });
+
+          return { ...doc, dati: nuoviCampi };
+        });
+
+        this.documents.set(updated);
+        this.newFieldKeyMap.update(obj => ({ ...obj, [docId]: '' }));
+        this.newFieldValueMap.update(obj => ({ ...obj, [docId]: '' }));
+      },
+      error: (err) => this.error.set('Errore nella modifica del campo: ' + err.message),
+      complete: () => this.loading.set(false)
+    });
+  }).catch(err => {
+    this.error.set('Errore nel recupero del token: ' + err.message);
+    this.loading.set(false);
+  });
+}
+toggleDetails(docId: string): void {
+  this.expandedDocs.update(map => ({
+    ...map,
+    [docId]: !map[docId]
+  }));
+}
+formatHtml(input: string): string {
+  // Consente solo <b>, <i>, <u> e chiude eventuali tag aperti
+  return input
+    .replace(/<(?!\/?(b|i|u)\b)[^>]*>/gi, '') // rimuove tag non ammessi
+    .replace(/&lt;/g, '<').replace(/&gt;/g, '>'); // decodifica eventuali entità
 }
 
 }
