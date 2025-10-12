@@ -1,25 +1,32 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { getAuth } from 'firebase/auth';
+import { NgxEditorModule, NgxEditorComponent, NgxEditorMenuComponent,Editor } from 'ngx-editor';
 
 @Component({
   selector: 'app-add-document-modal',
   standalone: true,
   templateUrl: './add-document-modal.component.html',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,NgxEditorModule,NgxEditorMenuComponent,NgxEditorComponent],
 })
-export class AddDocumentModalComponent {
+export class AddDocumentModalComponent implements OnInit, OnDestroy{
   @Input() collectionId = '';
   @Output() chiudi = new EventEmitter<void>();
   @Output() documentoCreato = new EventEmitter<void>();
-
+  editor!:Editor;
   documentId = '';
   campi: { chiave: string; valore: string }[] = [];
 
   constructor(private http: HttpClient) {}
+ ngOnInit(): void {
+    this.editor = new Editor();
+  }
 
+  ngOnDestroy(): void {
+    this.editor.destroy();
+  }
   aggiungiCampo() {
     this.campi.push({ chiave: '', valore: '' });
   }

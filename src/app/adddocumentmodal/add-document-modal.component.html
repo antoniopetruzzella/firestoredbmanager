@@ -1,21 +1,25 @@
 <div class="modal">
   <h2>➕ Nuovo Documento</h2>
 
-  <label>🆔 Nome documento:</label>
-  <input [(ngModel)]="documentId" placeholder="ID documento" />
+  <label for="documentId">🆔 Nome documento:</label>
+  <input id="documentId" [(ngModel)]="documentId" placeholder="ID documento" />
 
-  <div *ngFor="let campo of campi; let i = index">
-    <input [(ngModel)]="campo.chiave" placeholder="Titolo" />
-    <textarea
-  [(ngModel)]="campo.valore"
-  rows="3"
-  placeholder="Notizia"
-  style="width: 100%; resize: vertical;"
-></textarea>
+  <div *ngFor="let campo of campi; let i = index" class="campo-editor">
+    <label for="campo-{{i}}-titolo">Titolo:</label>
+    <input id="campo-{{i}}-titolo" [(ngModel)]="campo.chiave" placeholder="Titolo" />
+
+    <label for="campo-{{i}}-contenuto">Contenuto:</label>
+    <ngx-editor-menu [editor]="editor"></ngx-editor-menu>
+    <ngx-editor
+      [editor]="editor"
+      [(ngModel)]="campo.valore"
+      placeholder="Scrivi qui..."
+    ></ngx-editor>
   </div>
 
-  <button (click)="aggiungiCampo()">➕ Aggiungi campo</button>
-  <button (click)="caricaDocumento()">📤 Carica nuovo documento</button>
-  <button (click)="chiudi.emit()">❌ Chiudi</button>
+  <div class="actions">
+    <button (click)="aggiungiCampo()">➕ Aggiungi campo</button>
+    <button (click)="caricaDocumento()">📤 Carica nuovo documento</button>
+    <button (click)="chiudi.emit()">❌ Chiudi</button>
+  </div>
 </div>
-
