@@ -37,7 +37,7 @@
         <tbody>
           <tr *ngFor="let campo of doc.dati">
             <td>{{ campo.chiave }}</td>
-            <td>{{ campo.valore }}</td>
+            <td [innerHTML]="campo.valore"></td>
             <td>
               <button (click)="updateRecord(doc.id, campo.chiave, campo.valore)">🛠️ Modifica record</button>
               <button (click)="deleteRecord(doc.id, campo.chiave, campo.valore)">🗑️ Cancella record</button>
@@ -50,13 +50,15 @@
       <div style="margin-top: 10px;">
         <label><strong>Nuovo campo:</strong></label><br>
         <input [ngModel]="getKey(doc.id)" (ngModelChange)="updateKey(doc.id, $event)" placeholder="Titolo" />
-        <textarea
+        <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"></ngx-editor-menu>
+<ngx-editor
+  [editor]="editor"
+  
   [ngModel]="getValue(doc.id)"
   (ngModelChange)="updateValue(doc.id, $event)"
-  placeholder="Notizia"
-  rows="3"
-  style="width: 100%; resize: vertical;"
-></textarea>
+  placeholder="Scrivi qui..."
+></ngx-editor>
+
         <button (click)="addFieldToDocument(doc.id)">➕ Aggiungi campo</button>
       </div>
     </div>

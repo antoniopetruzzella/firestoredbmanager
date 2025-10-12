@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { getAuth } from 'firebase/auth';
-import { NgxEditorModule, NgxEditorComponent, NgxEditorMenuComponent,Editor } from 'ngx-editor';
+import { NgxEditorModule, NgxEditorComponent, NgxEditorMenuComponent,Editor, Toolbar } from 'ngx-editor';
 
 @Component({
   selector: 'app-add-document-modal',
@@ -16,6 +16,10 @@ export class AddDocumentModalComponent implements OnInit, OnDestroy{
   @Output() chiudi = new EventEmitter<void>();
   @Output() documentoCreato = new EventEmitter<void>();
   editor!:Editor;
+  toolbar: Toolbar = [
+    ['bold', 'italic', 'underline'],
+    ['link']
+  ];
   documentId = '';
   campi: { chiave: string; valore: string }[] = [];
 

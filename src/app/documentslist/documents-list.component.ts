@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClientModule, HttpClient, HttpParams } from '@angular/common/http';
@@ -6,15 +6,16 @@ import { FormsModule } from '@angular/forms';
 import { getAuth } from 'firebase/auth';
 import { AddDocumentModalComponent } from "../adddocumentmodal/add-document-modal.component";
 import { UploadImageModalComponent } from "../updateimagemodal/update-image-modal.component";
+import { NgxEditorModule, NgxEditorComponent, NgxEditorMenuComponent,Editor, Toolbar } from 'ngx-editor';
 
 @Component({
   selector: 'app-documents-list',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, FormsModule, AddDocumentModalComponent, UploadImageModalComponent],
+  imports: [CommonModule, HttpClientModule, FormsModule, AddDocumentModalComponent, UploadImageModalComponent,NgxEditorModule,NgxEditorMenuComponent,NgxEditorComponent],
   templateUrl: './documents-list.component.html',
   //styleUrls: ['./documents-list.component.css']
 })
-export class DocumentsListComponent implements OnInit {
+export class DocumentsListComponent implements OnInit, OnDestroy {
   collectionId = '';
   documents = signal<any[]>([]);
   loading = signal(false);
@@ -28,16 +29,22 @@ export class DocumentsListComponent implements OnInit {
   newFieldValueMap = signal<{ [docId: string]: string }>({});
   expandedDocs = signal<{ [docId: string]: boolean }>({});
   j!: number;
-
+  editor!:Editor;
+  toolbar: Toolbar = [
+      ['bold', 'italic', 'underline'],
+      ['link']
+    ];
   constructor(private route: ActivatedRoute, private http: HttpClient) {}
 
   ngOnInit(): void {
+    this.editor = new Editor();
     this.collectionId = this.route.snapshot.paramMap.get('collectionId') || '';
     if (!this.collectionId) {
       this.error.set('Collezione non specificata');
       return;
     }
-
+  
+    
     const auth = getAuth();
     const user = auth.currentUser;
 
@@ -67,7 +74,9 @@ export class DocumentsListComponent implements OnInit {
       this.loading.set(false);
     });
   }
-
+ngOnDestroy(): void {
+    this.editor.destroy();
+    }
   editDocumentName(docId: string): void {
     console.log('Modifica nome documento:', docId);
     this.editingDocId.set(docId);
@@ -365,3 +374,7 @@ formatHtml(input: string): string {
 }
 
 }
+function ngOnDestroy() {
+  throw new Error('Function not implemented.');
+}
+
