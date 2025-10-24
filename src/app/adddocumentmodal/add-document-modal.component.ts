@@ -18,6 +18,7 @@ export class AddDocumentModalComponent implements OnInit, OnDestroy{
   editor!:Editor;
   toolbar: Toolbar = [
     ['bold', 'italic', 'underline'],
+    [{ heading: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] }],
     ['link']
   ];
   documentId = '';
