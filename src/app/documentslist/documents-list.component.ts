@@ -37,44 +37,46 @@ export class DocumentsListComponent implements OnInit, OnDestroy {
     ];
   constructor(private route: ActivatedRoute, private http: HttpClient) {}
 
-  ngOnInit(): void {
-    this.editor = new Editor();
-    this.collectionId = this.route.snapshot.paramMap.get('collectionId') || '';
-    if (!this.collectionId) {
-      this.error.set('Collezione non specificata');
-      return;
-    }
-  
-    
-    const auth = getAuth();
-    const user = auth.currentUser;
-
-    if (!user) {
-      this.error.set('Utente non autenticato');
-      return;
-    }
-
-    this.loading.set(true);
-
-    user.getIdToken().then(token => {
-      const url = `https://getcollectiondocuments-565624036400.europe-west1.run.app?collezione=${this.collectionId}`;
-      this.http.get<any[]>(url, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      }).subscribe({
-        next: (data: any) => {
-          console.log('Documenti ricevuti:', data);
-          this.documents.set(data.dati);
-        },
-        error: (err) => this.error.set('Errore nel recupero: ' + err.message),
-        complete: () => this.loading.set(false)
-      });
-    }).catch(err => {
-      this.error.set('Errore nel recupero del token: ' + err.message);
-      this.loading.set(false);
-    });
+ngOnInit(): void {
+  this.editor = new Editor();
+  this.collectionId = this.route.snapshot.paramMap.get('collectionId') || '';
+  if (!this.collectionId) {
+    this.error.set('Collezione non specificata');
+    return;
   }
+
+  this.caricaDocumenti();
+}
+
+  caricaDocumenti() {
+  this.loading.set(true);
+  const auth = getAuth();
+  const user = auth.currentUser;
+
+  if (!user) {
+    this.error.set('Utente non autenticato');
+    this.loading.set(false);
+    return;
+  }
+
+  user.getIdToken().then(token => {
+    const url = `https://getcollectiondocuments-565624036400.europe-west1.run.app?collezione=${this.collectionId}`;
+    this.http.get<any[]>(url, {
+      headers: { Authorization: `Bearer ${token}` }
+    }).subscribe({
+      next: (data: any) => this.documents.set(data.dati),
+      error: (err) => this.error.set('Errore nel recupero: ' + err.message),
+      complete: () => this.loading.set(false)
+    });
+  }).catch(err => {
+    this.error.set('Errore nel recupero del token: ' + err.message);
+    this.loading.set(false);
+  });
+}
+onDocumentoCreato() {
+  this.caricaDocumenti();
+}
+
 ngOnDestroy(): void {
     this.editor.destroy();
     }
@@ -228,7 +230,8 @@ addFieldToDocument(docId: string): void {
             ? { ...doc, [chiave]: valore }
             : doc
         );
-        this.documents.set(updated);
+        //this.documents.set(updated);
+        this.caricaDocumenti();
         this.newFieldKeyMap.update(obj => ({ ...obj, [docId]: '' }));
         this.newFieldValueMap.update(obj => ({ ...obj, [docId]: '' }));
       },

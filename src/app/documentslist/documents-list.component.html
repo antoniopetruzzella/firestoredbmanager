@@ -72,6 +72,7 @@
   <app-add-document-modal
     *ngIf="showModalNewDoc()"
     [collectionId]="collectionId"
+    (documentoCreato)="onDocumentoCreato()"
     (chiudi)="showModalNewDoc.set(false)"
   ></app-add-document-modal>
 
