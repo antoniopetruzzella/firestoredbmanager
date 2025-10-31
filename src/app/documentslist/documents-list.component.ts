@@ -64,7 +64,17 @@ ngOnInit(): void {
     this.http.get<any[]>(url, {
       headers: { Authorization: `Bearer ${token}` }
     }).subscribe({
-      next: (data: any) => this.documents.set(data.dati),
+      next: (data: any) => {
+  const arricchiti = data.dati.map((doc: { dati: any[]; }) => {
+    const progrCampo = doc.dati?.find(c => c.chiave === 'progr');
+    return {
+      ...doc,
+      progr: progrCampo ? Number(progrCampo.valore) : null
+    };
+  });
+  this.documents.set(arricchiti);
+},
+
       error: (err) => this.error.set('Errore nel recupero: ' + err.message),
       complete: () => this.loading.set(false)
     });
@@ -375,6 +385,43 @@ formatHtml(input: string): string {
   return input
     .replace(/<(?!\/?(b|i|u)\b)[^>]*>/gi, '') // rimuove tag non ammessi
     .replace(/&lt;/g, '<').replace(/&gt;/g, '>'); // decodifica eventuali entità
+}
+spostaDocumento(docIdA: string, progrA: number, docIdB: string, progrB: number): void {
+  const auth = getAuth();
+  const user = auth.currentUser;
+
+  if (!user) {
+    this.error.set('Utente non autenticato');
+    return;
+  }
+
+  this.loading.set(true);
+
+  user.getIdToken().then(token => {
+    const url = 'https://scambiaprogr-565624036400.europe-west1.run.app';
+    console.log("progr a", progrA,"progr b",progrB);
+    const body = {
+      collezionePadreID: this.collectionId,
+      primoDocID: docIdA,
+      primoProgr: progrA,
+      secondoDocID: docIdB,
+      secondoProgr: progrB
+    };
+
+    this.http.post(url, body, {
+      headers: { Authorization: `Bearer ${token}` }
+    }).subscribe({
+      next: () => {
+        console.log(`✅ Scambiati progr tra ${docIdA} e ${docIdB}`);
+        this.caricaDocumenti();
+      },
+      error: (err) => this.error.set('Errore nello scambio: ' + err.message),
+      complete: () => this.loading.set(false)
+    });
+  }).catch(err => {
+    this.error.set('Errore nel recupero del token: ' + err.message);
+    this.loading.set(false);
+  });
 }
 
 }

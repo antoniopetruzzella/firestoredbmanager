@@ -11,6 +11,11 @@
           {{ expandedDocs()[doc.id] ? '−' : '+' }}
         </button>
         Documento {{ i + 1 }} - ID: {{ doc.id }}
+         <!-- Frecce di spostamento -->
+    <ng-container *ngIf="documents().length > 1">
+      <button *ngIf="i > 0" (click)="spostaDocumento(doc.id, doc.progr, documents()[i - 1].id, documents()[i - 1].progr)">⬆️</button>
+      <button *ngIf="i < documents().length - 1" (click)="spostaDocumento(doc.id, doc.progr, documents()[i + 1].id, documents()[i + 1].progr)">⬇️</button>
+    </ng-container>
       </h3>
 
       <div *ngIf="editingDocId() !== doc.id">
